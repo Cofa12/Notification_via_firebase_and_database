@@ -31,7 +31,13 @@
             "Tests\\": "tests/"
         }
     },
-
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Cofa\\NotificationViaFirebaseAndDatabase\\FirebaseNotificationServiceProvider"
+            ]
+        }
+    },
     "scripts": {
         "test": "vendor/bin/phpunit --testdox",
         "psalm": "psalm --no-cache"

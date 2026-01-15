@@ -17,7 +17,6 @@
     <source>
         <include>
             <directory>src</directory>
-            <file>FirebaseNotificationServiceProvider.php</file>
         </include>
     </source>
 </phpunit>
