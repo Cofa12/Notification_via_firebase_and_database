@@ -74,7 +74,26 @@ php artisan migrate
 
 ### 1. Firebase Notifications
 
-Create a custom Firebase notification class:
+#### Step 1: Create the Firebase Payload
+
+```php
+use Cofa\NotificationViaFirebaseAndDatabase\Contracts\FirebasePayload;
+
+$payload = new FirebasePayload();
+$payload->setData([
+    'notification' => [
+        'title' => 'Order Shipped',
+        'body' => 'Your order #12345 has been shipped!'
+    ],
+    'data' => [
+        'order_id' => '12345',
+        'tracking_number' => 'TRK123456789',
+        'type' => 'order_shipped'
+    ]
+]);
+```
+
+#### Step 2: Create a Custom Firebase Notification Class
 
 ```php
 <?php
@@ -106,7 +125,7 @@ class OrderShippedFirebaseNotification extends FirebaseNotification
 }
 ```
 
-Send the notification:
+#### Step 3: Send the Firebase Notification
 
 ```php
 use App\Notifications\OrderShippedFirebaseNotification;
@@ -118,7 +137,7 @@ $orderData = [
 
 $notification = new OrderShippedFirebaseNotification($orderData);
 
-// Device FCM tokens
+// Device FCM tokens (from your database or user model)
 $tokens = [
     'device_token_1',
     'device_token_2',
@@ -130,17 +149,23 @@ $notification->sendNotification($tokens);
 
 ### 2. Database Notifications
 
-Create and send database notifications:
+#### Step 1: Prepare the Notification Data
+
+```php
+$notificationData = [
+    'type' => 'order_shipped',
+    'title' => 'Order Shipped',
+    'message' => 'Your order has been shipped',
+    'order_id' => 12345,
+    'tracking_number' => 'TRK123456789',
+    'timestamp' => now()
+];
+```
+
+#### Step 2: Create and Send the Database Notification
 
 ```php
 use Cofa\NotificationViaFirebaseAndDatabase\Contracts\DatabaseNotification;
-
-$notificationData = [
-    'type' => 'order_shipped',
-    'message' => 'Your order has been shipped',
-    'order_id' => 12345,
-    'tracking_number' => 'TRK123456789'
-];
 
 $notification = new DatabaseNotification($notificationData);
 
@@ -150,7 +175,7 @@ $users = User::whereIn('id', [1, 2, 3])->get();
 $notification->sendNotification($users->toArray());
 ```
 
-Retrieve user notifications:
+#### Step 3: Retrieve User Notifications
 
 ```php
 // Get unread notifications
