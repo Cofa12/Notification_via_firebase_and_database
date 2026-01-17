@@ -102,7 +102,7 @@ class DatabaseNotificationFeatureTest extends TestCase
             {
                 $this->name = $name;
             }
-            public function notify()
+            public function notify($notification)
             {
                 return true;
             }

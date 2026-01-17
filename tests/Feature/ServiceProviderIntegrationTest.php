@@ -101,16 +101,23 @@ class ServiceProviderIntegrationTest extends TestCase
 
     private function createMockApplication(bool $runningInConsole = false)
     {
-        $app = $this->createMock(Application::class);
+        return new class ($runningInConsole) {
+            private bool $runningInConsole;
 
-        $app->method('runningInConsole')
-            ->willReturn($runningInConsole);
+            public function __construct(bool $runningInConsole)
+            {
+                $this->runningInConsole = $runningInConsole;
+            }
 
-        if ($runningInConsole) {
-            $app->method('configPath')
-                ->willReturn('/fake/path/config');
-        }
+            public function runningInConsole(): bool
+            {
+                return $this->runningInConsole;
+            }
 
-        return $app;
+            public function configPath(string $path = ''): string
+            {
+                return '/fake/path/config';
+            }
+        };
     }
 }

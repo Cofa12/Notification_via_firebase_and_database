@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use Cofa\NotificationViaFirebaseAndDatabase\Console\InstallCommand;
-use Illuminate\Console\Application;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use PHPUnit\Framework\TestCase;

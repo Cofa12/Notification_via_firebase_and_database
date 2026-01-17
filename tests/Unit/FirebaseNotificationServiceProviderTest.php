@@ -16,7 +16,16 @@ class FirebaseNotificationServiceProviderTest extends TestCase
     {
         parent::setUp();
 
-        $this->app = $this->createMock(Application::class);
+        $this->app = new class {
+            public function runningInConsole(): bool
+            {
+                return false;
+            }
+            public function configPath(string $path = ''): string
+            {
+                return '/fake/path/config';
+            }
+        };
         $this->provider = new FirebaseNotificationServiceProvider($this->app);
     }
 
@@ -51,40 +60,64 @@ class FirebaseNotificationServiceProviderTest extends TestCase
 
     public function test_boot_publishes_config_when_running_in_console(): void
     {
-        $this->app->expects($this->once())
-            ->method('runningInConsole')
-            ->willReturn(true);
+        $app = new class {
+            public int $runningInConsoleCallCount = 0;
+            public int $configPathCallCount = 0;
 
-        $this->app->expects($this->once())
-            ->method('configPath')
-            ->with('firebase-notification.php')
-            ->willReturn('/path/to/config/firebase-notification.php');
+            public function runningInConsole(): bool
+            {
+                $this->runningInConsoleCallCount++;
+                return true;
+            }
 
-        $this->provider = $this->getMockBuilder(FirebaseNotificationServiceProvider::class)
-            ->setConstructorArgs([$this->app])
+            public function configPath(string $path = ''): string
+            {
+                $this->configPathCallCount++;
+                return '/path/to/config/firebase-notification.php';
+            }
+        };
+
+        $provider = $this->getMockBuilder(FirebaseNotificationServiceProvider::class)
+            ->setConstructorArgs([$app])
             ->onlyMethods(['publishes'])
             ->getMock();
 
-        $this->provider->expects($this->once())
+        $provider->expects($this->once())
             ->method('publishes');
 
-        $this->provider->boot();
+        $provider->boot();
+
+        $this->assertEquals(1, $app->runningInConsoleCallCount);
+        $this->assertEquals(1, $app->configPathCallCount);
     }
 
     public function test_boot_does_not_publish_when_not_running_in_console(): void
     {
-        $this->app->expects($this->once())
-            ->method('runningInConsole')
-            ->willReturn(false);
+        $app = new class {
+            public int $runningInConsoleCallCount = 0;
 
-        $this->provider = $this->getMockBuilder(FirebaseNotificationServiceProvider::class)
-            ->setConstructorArgs([$this->app])
+            public function runningInConsole(): bool
+            {
+                $this->runningInConsoleCallCount++;
+                return false;
+            }
+
+            public function configPath(string $path = ''): string
+            {
+                return '/fake/path/config';
+            }
+        };
+
+        $provider = $this->getMockBuilder(FirebaseNotificationServiceProvider::class)
+            ->setConstructorArgs([$app])
             ->onlyMethods(['publishes'])
             ->getMock();
 
-        $this->provider->expects($this->never())
+        $provider->expects($this->never())
             ->method('publishes');
 
-        $this->provider->boot();
+        $provider->boot();
+
+        $this->assertEquals(1, $app->runningInConsoleCallCount);
     }
 }
