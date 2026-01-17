@@ -15,9 +15,11 @@ class PayloadTest extends TestCase
         $this->payload = new class extends Payload {};
     }
 
-    public function test_constructor_initializes_payload_as_null(): void
+    public function test_constructor_initializes_payload_as_empty_array(): void
     {
-        $this->assertNull($this->payload->getData());
+        $result = $this->payload->getData();
+        $this->assertIsArray($result);
+        $this->assertEmpty($result);
     }
 
     public function test_set_data_stores_data_in_payload_array(): void

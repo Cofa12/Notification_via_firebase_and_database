@@ -7,7 +7,7 @@ abstract class Payload
     protected ?array $payload;
     public function __construct()
     {
-        $this->payload = null;
+        $this->payload = [];
     }
 
     public function setData(array $data)

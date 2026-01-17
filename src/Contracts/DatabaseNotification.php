@@ -8,9 +8,13 @@ class DatabaseNotification extends LaravelNotification implements Notification
 {
     protected array $data;
 
-    public function __construct(DatabasePayload $databasePayload)
+    public function __construct(DatabasePayload|array $databasePayload)
     {
-        $this->data = $databasePayload->getData();
+        if (is_array($databasePayload)) {
+            $this->data = $databasePayload;
+        } else {
+            $this->data = $databasePayload->getData();
+        }
     }
 
     /**

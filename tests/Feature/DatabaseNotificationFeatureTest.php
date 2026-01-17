@@ -46,8 +46,11 @@ class DatabaseNotificationFeatureTest extends TestCase
         ];
 
         $notification = new DatabaseNotification($complexData);
-        $mockNotifiable = $this->createMock(\stdClass::class);
-        $mockNotifiable->method('notify');
+        $mockNotifiable = new class {
+            public function notify($notification)
+            {
+            }
+        };
 
         $result = $notification->toDatabase($mockNotifiable);
 
@@ -84,8 +87,11 @@ class DatabaseNotificationFeatureTest extends TestCase
     public function test_empty_notification_data(): void
     {
         $notification = new DatabaseNotification([]);
-        $mockNotifiable = $this->createMock(\stdClass::class);
-        $mockNotifiable->method('notify');
+        $mockNotifiable = new class {
+            public function notify($notification)
+            {
+            }
+        };
 
         $result = $notification->toDatabase($mockNotifiable);
 
@@ -95,13 +101,17 @@ class DatabaseNotificationFeatureTest extends TestCase
 
     private function createNotifiableMock(string $name)
     {
-        $mock = $this->createMock(\stdClass::class);
-        $mock->method('notify')
-            ->willReturnCallback(function ($notification) use ($name) {
+        return new class ($name) {
+            private string $name;
+            public function __construct(string $name)
+            {
+                $this->name = $name;
+            }
+            public function notify($notification)
+            {
                 // Simulate storing notification
                 return true;
-            });
-
-        return $mock;
+            }
+        };
     }
 }

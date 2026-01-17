@@ -16,7 +16,7 @@
     ],
     "require": {
         "php": "^8.2",
-        "kreait/firebase-php":"^7.0|^8.0",
+        "kreait/firebase-php": "^7.0|^8.0",
         "illuminate/support": "^10.0|^11.0|^12.0",
         "illuminate/config": "^10.0|^11.0|^12.0",
         "illuminate/notifications": "^10.0|^11.0|^12.0"
@@ -25,11 +25,13 @@
         "phpunit/phpunit": "^10.0|^11.0|^12.0",
         "vimeo/psalm": "^5.0|^6.0"
     },
-
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/"
-        }
+        },
+        "files": [
+            "tests/helpers.php"
+        ]
     },
     "extra": {
         "laravel": {

@@ -3,6 +3,7 @@
 namespace Tests\Unit\Contracts;
 
 use Cofa\NotificationViaFirebaseAndDatabase\Contracts\DatabaseNotification;
+use Cofa\NotificationViaFirebaseAndDatabase\Contracts\DatabasePayload;
 use Cofa\NotificationViaFirebaseAndDatabase\Contracts\Notification;
 use Illuminate\Notifications\Notification as LaravelNotification;
 use PHPUnit\Framework\TestCase;
@@ -41,6 +42,15 @@ class DatabaseNotificationTest extends TestCase
         $this->assertInstanceOf(DatabaseNotification::class, $notification);
     }
 
+    public function test_constructor_accepts_database_payload(): void
+    {
+        $payload = new DatabasePayload();
+        $payload->setData(['key' => 'value']);
+        $notification = new DatabaseNotification($payload);
+
+        $this->assertInstanceOf(DatabaseNotification::class, $notification);
+    }
+
     public function test_via_method_returns_database_channel(): void
     {
         $notifiable = $this->createMock(\stdClass::class);
@@ -63,17 +73,26 @@ class DatabaseNotificationTest extends TestCase
 
     public function test_send_notification_calls_notify_on_each_target(): void
     {
-        $target1 = $this->createMock(\stdClass::class);
-        $target1->expects($this->once())
-            ->method('notify')
-            ->with($this->notification);
+        $target1 = new class {
+            public int $callCount = 0;
+            public function notify($notification)
+            {
+                $this->callCount++;
+            }
+        };
 
-        $target2 = $this->createMock(\stdClass::class);
-        $target2->expects($this->once())
-            ->method('notify')
-            ->with($this->notification);
+        $target2 = new class {
+            public int $callCount = 0;
+            public function notify($notification)
+            {
+                $this->callCount++;
+            }
+        };
 
         $this->notification->sendNotification([$target1, $target2]);
+
+        $this->assertEquals(1, $target1->callCount);
+        $this->assertEquals(1, $target2->callCount);
     }
 
     public function test_send_notification_with_empty_targets(): void
@@ -86,11 +105,16 @@ class DatabaseNotificationTest extends TestCase
 
     public function test_send_notification_with_single_target(): void
     {
-        $target = $this->createMock(\stdClass::class);
-        $target->expects($this->once())
-            ->method('notify')
-            ->with($this->notification);
+        $target = new class {
+            public int $callCount = 0;
+            public function notify($notification)
+            {
+                $this->callCount++;
+            }
+        };
 
         $this->notification->sendNotification([$target]);
+
+        $this->assertEquals(1, $target->callCount);
     }
 }
