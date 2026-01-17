@@ -119,7 +119,6 @@ class FirebaseNotificationFeatureTest extends TestCase
             'device_token_5'
         ];
 
-        // Will throw exception due to missing credentials
         $notification->sendNotification($tokens);
     }
 

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Cofa\NotificationViaFirebaseAndDatabase\FirebaseNotificationServiceProvider;
+use Illuminate\Console\Application;
 use PHPUnit\Framework\TestCase;
 
 class ServiceProviderIntegrationTest extends TestCase
@@ -13,10 +14,8 @@ class ServiceProviderIntegrationTest extends TestCase
 
         $provider = new FirebaseNotificationServiceProvider($app);
 
-        // Test that provider can be instantiated
         $this->assertInstanceOf(FirebaseNotificationServiceProvider::class, $provider);
 
-        // Mock the register method
         $provider = $this->getMockBuilder(FirebaseNotificationServiceProvider::class)
             ->setConstructorArgs([$app])
             ->onlyMethods(['mergeConfigFrom'])
@@ -86,13 +85,11 @@ class ServiceProviderIntegrationTest extends TestCase
             ->onlyMethods(['mergeConfigFrom', 'publishes'])
             ->getMock();
 
-        // First register is called
         $provider->expects($this->once())
             ->method('mergeConfigFrom');
 
         $provider->register();
 
-        // Then boot is called
         $app->expects($this->once())
             ->method('runningInConsole')
             ->willReturn(false);
@@ -104,7 +101,7 @@ class ServiceProviderIntegrationTest extends TestCase
 
     private function createMockApplication(bool $runningInConsole = false)
     {
-        $app = $this->createMock(\Illuminate\Contracts\Foundation\Application::class);
+        $app = $this->createMock(Application::class);
 
         $app->method('runningInConsole')
             ->willReturn($runningInConsole);

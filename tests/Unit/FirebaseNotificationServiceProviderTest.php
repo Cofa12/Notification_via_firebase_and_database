@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use Cofa\NotificationViaFirebaseAndDatabase\FirebaseNotificationServiceProvider;
+use Illuminate\Console\Application;
 use Illuminate\Support\ServiceProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -15,7 +16,7 @@ class FirebaseNotificationServiceProviderTest extends TestCase
     {
         parent::setUp();
 
-        $this->app = $this->createMock(\Illuminate\Contracts\Foundation\Application::class);
+        $this->app = $this->createMock(Application::class);
         $this->provider = new FirebaseNotificationServiceProvider($this->app);
     }
 

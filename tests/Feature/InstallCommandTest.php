@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Cofa\NotificationViaFirebaseAndDatabase\Console\InstallCommand;
+use Illuminate\Console\Application;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +16,6 @@ class InstallCommandTest extends TestCase
     {
         parent::setUp();
 
-        // Create a temporary migrations directory for testing.yml
         $this->testMigrationsPath = sys_get_temp_dir() . '/test_migrations_' . uniqid();
         if (!is_dir($this->testMigrationsPath)) {
             mkdir($this->testMigrationsPath, 0777, true);
@@ -24,7 +24,6 @@ class InstallCommandTest extends TestCase
 
     protected function tearDown(): void
     {
-        // Clean up test migrations directory
         if (is_dir($this->testMigrationsPath)) {
             $this->removeDirectory($this->testMigrationsPath);
         }
@@ -44,7 +43,6 @@ class InstallCommandTest extends TestCase
         $app = $this->createMockApplication();
         $command = new InstallCommand();
 
-        // Use reflection to access protected property
         $reflection = new \ReflectionClass($command);
         $signatureProperty = $reflection->getProperty('signature');
         $signatureProperty->setAccessible(true);
@@ -98,12 +96,10 @@ class InstallCommandTest extends TestCase
     {
         $app = $this->createMockApplication();
 
-        // Create a partial mock of InstallCommand
         $command = $this->getMockBuilder(InstallCommand::class)
             ->onlyMethods(['call', 'info', 'line', 'comment'])
             ->getMock();
 
-        // Expect that the 'notifications:table' command is called
         $command->expects($this->once())
             ->method('call')
             ->with('notifications:table');
@@ -113,7 +109,6 @@ class InstallCommandTest extends TestCase
         $command->method('line')->willReturn(null);
         $command->method('comment')->willReturn(null);
 
-        // Use reflection to call the protected method
         $reflection = new \ReflectionClass($command);
         $method = $reflection->getMethod('createNotificationsTable');
         $method->setAccessible(true);
@@ -122,15 +117,13 @@ class InstallCommandTest extends TestCase
 
     public function test_publish_migrations_creates_migration_file(): void
     {
-        $app = $this->createMockApplication();
+        $this->createMockApplication();
 
-        // Create a mock command with overridden database_path
         $command = new class extends InstallCommand {
             public string $testMigrationsPath;
 
             public function testPublishMigrations(): void
             {
-                // Override the database_path function for this test
                 $this->publishMigrations();
             }
 
@@ -153,11 +146,9 @@ class InstallCommandTest extends TestCase
 
         $command->testMigrationsPath = $this->testMigrationsPath;
 
-        // Mock the info method
         $reflection = new \ReflectionClass($command);
-        $infoMethod = $reflection->getMethod('info');
+        $reflection->getMethod('info');
 
-        // This test verifies the method exists and can be called
         $this->assertTrue($reflection->hasMethod('publishMigrations'));
     }
 
@@ -176,7 +167,6 @@ class InstallCommandTest extends TestCase
 
         $content = file_get_contents($stubPath);
 
-        // Check for key components of the migration
         $this->assertStringContainsString('use Illuminate\Database\Migrations\Migration', $content);
         $this->assertStringContainsString('use Illuminate\Database\Schema\Blueprint', $content);
         $this->assertStringContainsString('Schema::create(\'user_device_tokens\'', $content);
@@ -190,15 +180,12 @@ class InstallCommandTest extends TestCase
 
     public function test_handle_method_returns_success(): void
     {
-        $app = $this->createMockApplication();
+        $this->createMockApplication();
 
-        // Create a partial mock
         $command = $this->getMockBuilder(InstallCommand::class)
             ->onlyMethods(['createNotificationsTable', 'publishMigrations', 'info', 'line', 'comment'])
             ->getMock();
 
-        // Mock all the methods that would be called
-        // Note: createNotificationsTable and publishMigrations are void methods, no willReturn needed
         $command->expects($this->once())->method('createNotificationsTable');
         $command->expects($this->once())->method('publishMigrations');
         $command->method('info')->willReturn(null);
@@ -212,16 +199,14 @@ class InstallCommandTest extends TestCase
 
     public function test_install_command_execution_order(): void
     {
-        $app = $this->createMockApplication();
+        $this->createMockApplication();
 
         $callOrder = [];
 
-        // Create a partial mock to track method calls
         $command = $this->getMockBuilder(InstallCommand::class)
             ->onlyMethods(['createNotificationsTable', 'publishMigrations', 'info', 'line', 'comment'])
             ->getMock();
 
-        // Track the order of calls
         $command->expects($this->once())
             ->method('createNotificationsTable')
             ->willReturnCallback(function () use (&$callOrder) {
@@ -240,13 +225,12 @@ class InstallCommandTest extends TestCase
 
         $command->handle();
 
-        // Verify that createNotificationsTable is called before publishMigrations
         $this->assertEquals(['createNotificationsTable', 'publishMigrations'], $callOrder);
     }
 
     private function createMockApplication()
     {
-        $app = $this->createMock(\Illuminate\Contracts\Foundation\Application::class);
+        $app = $this->createMock(Application::class);
 
         $app->method('runningInConsole')
             ->willReturn(true);

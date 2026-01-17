@@ -18,19 +18,15 @@ class DatabaseNotificationFeatureTest extends TestCase
 
         $notification = new DatabaseNotification($notificationData);
 
-        // Test that notification is created correctly
         $this->assertInstanceOf(DatabaseNotification::class, $notification);
 
-        // Create mock notifiable entities (users)
         $user1 = $this->createNotifiableMock('User 1');
         $user2 = $this->createNotifiableMock('User 2');
         $user3 = $this->createNotifiableMock('User 3');
 
-        // Test that notification can be sent to multiple users
         $notification->sendNotification([$user1, $user2, $user3]);
 
-        // Verify each user received the notification
-        $this->assertTrue(true); // If we reach here, no exceptions were thrown
+        $this->assertTrue(true);
     }
 
     public function test_database_notification_with_various_data_types(): void
@@ -76,7 +72,6 @@ class DatabaseNotificationFeatureTest extends TestCase
         $notification2 = new DatabaseNotification(['message' => 'Second notification']);
         $notification3 = new DatabaseNotification(['message' => 'Third notification']);
 
-        // Should handle multiple notifications without issues
         $notification1->sendNotification([$user]);
         $notification2->sendNotification([$user]);
         $notification3->sendNotification([$user]);
@@ -107,9 +102,8 @@ class DatabaseNotificationFeatureTest extends TestCase
             {
                 $this->name = $name;
             }
-            public function notify($notification)
+            public function notify()
             {
-                // Simulate storing notification
                 return true;
             }
         };
