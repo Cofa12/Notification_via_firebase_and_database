@@ -63,12 +63,37 @@ return [
 
 ### Database Setup
 
-For database notifications, ensure you have the notifications table:
+#### Install Package Tables
+
+Run the installation command to set up the required database tables:
 
 ```bash
-php artisan notifications:table
+php artisan firebase-notification:install
+```
+
+This command will automatically:
+1. Run `php artisan notifications:table` to create the Laravel notifications table
+2. Publish the `user_device_tokens` table migration
+
+Then run the migrations:
+
+```bash
 php artisan migrate
 ```
+
+The installation creates two tables:
+- `user_device_tokens` - Stores FCM device tokens for users
+- `notifications` - Laravel's default notifications table (if not already exists)
+
+#### User Device Tokens Table Structure
+
+The `user_device_tokens` table includes:
+- `user_id` - Foreign key to users table
+- `device_token` - Unique FCM device token
+- `device_type` - Device platform (android, ios, web)
+- `device_name` - Optional device name
+- `is_active` - Token active status
+- `last_used_at` - Last time token was used
 
 ## Usage
 
@@ -363,7 +388,7 @@ This package is open-source software licensed under the MIT license.
 ## Credits
 
 - **Author**: Mahmoud Gamal
-- **Email**: 112869567+Cofa12@users.noreply.github.com
+- **Email**: mgcofa@gmail.com
 
 ## Support
 
