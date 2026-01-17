@@ -64,7 +64,7 @@ class FirebaseNotificationFeatureTest extends TestCase
             ]
         ]);
 
-        // Create concrete implementation for testing
+        // Create concrete implementation for testing.yml
         $notification = new class($payload) extends FirebaseNotification {};
 
         // This should throw exception as credentials are not configured
