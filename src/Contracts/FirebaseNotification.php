@@ -28,7 +28,7 @@ abstract class FirebaseNotification implements Notification
         $messaging = $factory->createMessaging();
 
         $message = CloudMessage::fromArray(
-            $this->payload->getData()
+            $this->payload->getPayload()
         );
 
         $messaging->sendMulticast($message, $targets);

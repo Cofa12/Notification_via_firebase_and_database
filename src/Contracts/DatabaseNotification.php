@@ -13,7 +13,7 @@ class DatabaseNotification extends LaravelNotification implements Notification
         if (is_array($databasePayload)) {
             $this->data = $databasePayload;
         } else {
-            $this->data = $databasePayload->getData();
+            $this->data = $databasePayload->getPayload();
         }
     }
 
