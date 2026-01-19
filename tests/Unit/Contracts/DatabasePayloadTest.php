@@ -31,7 +31,7 @@ class DatabasePayloadTest extends TestCase
 
         $this->payload->setData($data);
 
-        $result = $this->payload->getData();
+        $result = $this->payload->getPayload();
         $this->assertIsArray($result);
         $this->assertArrayHasKey('data', $result);
     }

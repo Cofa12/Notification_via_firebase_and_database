@@ -17,7 +17,7 @@ class PayloadTest extends TestCase
 
     public function test_constructor_initializes_payload_as_empty_array(): void
     {
-        $result = $this->payload->getData();
+        $result = $this->payload->getPayload();
         $this->assertIsArray($result);
         $this->assertEmpty($result);
     }
@@ -28,7 +28,7 @@ class PayloadTest extends TestCase
 
         $this->payload->setData($data);
 
-        $result = $this->payload->getData();
+        $result = $this->payload->getPayload();
         $this->assertIsArray($result);
         $this->assertArrayHasKey('data', $result);
         $this->assertEquals($data, $result['data']);
@@ -42,7 +42,7 @@ class PayloadTest extends TestCase
         $this->payload->setData($firstData);
         $this->payload->setData($secondData);
 
-        $result = $this->payload->getData();
+        $result = $this->payload->getPayload();
         $this->assertEquals($secondData, $result['data']);
     }
 
@@ -50,7 +50,7 @@ class PayloadTest extends TestCase
     {
         $this->payload->setData([]);
 
-        $result = $this->payload->getData();
+        $result = $this->payload->getPayload();
         $this->assertArrayHasKey('data', $result);
         $this->assertEmpty($result['data']);
     }

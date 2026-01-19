@@ -44,7 +44,7 @@ class FirebaseNotificationFeatureTest extends TestCase
 
         $payload->setData($notificationData);
 
-        $result = $payload->getData();
+        $result = $payload->getPayload();
 
         $this->assertIsArray($result);
         $this->assertArrayHasKey('data', $result);
@@ -91,7 +91,7 @@ class FirebaseNotificationFeatureTest extends TestCase
         ];
 
         $payload->setData($complexData);
-        $result = $payload->getData();
+        $result = $payload->getPayload();
 
         $this->assertArrayHasKey('data', $result);
         $this->assertEquals($complexData, $result['data']);
@@ -134,7 +134,7 @@ class FirebaseNotificationFeatureTest extends TestCase
         ];
 
         $payload->setData($initialData);
-        $result1 = $payload->getData();
+        $result1 = $payload->getPayload();
 
         $updatedData = [
             'notification' => [
@@ -144,7 +144,7 @@ class FirebaseNotificationFeatureTest extends TestCase
         ];
 
         $payload->setData($updatedData);
-        $result2 = $payload->getData();
+        $result2 = $payload->getPayload();
 
         $this->assertNotEquals($result1['data'], $result2['data']);
         $this->assertEquals($updatedData, $result2['data']);
