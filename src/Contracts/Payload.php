@@ -20,14 +20,4 @@ abstract class Payload
         return $this->payload;
     }
 
-    public function setAndroidConfiguration(array $iosConfiguration):void
-    {
-        $this->payload['android'] = $iosConfiguration;
-    }
-
-    public function setIOSConfiguration(array $iosConfiguration): void
-    {
-        $this->payload['apns'] = $iosConfiguration;
-    }
-
 }
