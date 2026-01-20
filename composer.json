@@ -21,6 +21,10 @@
         "illuminate/config": "^10.0|^11.0|^12.0",
         "illuminate/notifications": "^10.0|^11.0|^12.0"
     },
+
+    "conflict": {
+        "tymon/jwt-auth": "*"
+    },
     "require-dev": {
         "phpunit/phpunit": "^10.0|^11.0|^12.0",
         "vimeo/psalm": "^5.0|^6.0"
