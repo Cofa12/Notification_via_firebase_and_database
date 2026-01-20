@@ -105,6 +105,8 @@ The `user_device_tokens` table includes:
 use Cofa\NotificationViaFirebaseAndDatabase\Contracts\FirebasePayload;
 
 $payload = new FirebasePayload();
+
+// Set Notification Data
 $payload->setData([
     'notification' => [
         'title' => 'Order Shipped',
@@ -114,6 +116,28 @@ $payload->setData([
         'order_id' => '12345',
         'tracking_number' => 'TRK123456789',
         'type' => 'order_shipped'
+    ]
+]);
+
+// Set Android Configuration
+$payload->setAndroidConfiguration([
+    'priority' => 'high',
+    'notification' => [
+        'sound' => 'default',
+        'color' => '#ff0000'
+    ]
+]);
+
+// Set iOS Configuration
+$payload->setIOSConfiguration([
+    'headers' => [
+        'apns-priority' => '10'
+    ],
+    'payload' => [
+        'aps' => [
+            'sound' => 'default',
+            'badge' => 1
+        ]
     ]
 ]);
 ```
@@ -144,6 +168,9 @@ class OrderShippedFirebaseNotification extends FirebaseNotification
                 'type' => 'order_shipped'
             ]
         ]);
+        
+        // Optional: Set platform specific configs
+        $payload->setAndroidConfiguration(['priority' => 'high']);
 
         parent::__construct($payload);
     }
@@ -260,14 +287,16 @@ $payload->setData([
         'discount' => 50,
         'valid_until' => '2026-12-31',
         'deep_link' => 'app://promotions/PROMO123'
-    ],
-    'android' => [
-        'priority' => 'high'
-    ],
-    'apns' => [
-        'headers' => [
-            'apns-priority' => '10'
-        ]
+    ]
+]);
+
+$payload->setAndroidConfiguration([
+    'priority' => 'high'
+]);
+
+$payload->setIOSConfiguration([
+    'headers' => [
+        'apns-priority' => '10'
     ]
 ]);
 ```
