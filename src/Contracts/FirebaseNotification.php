@@ -2,10 +2,9 @@
 
 namespace Cofa\NotificationViaFirebaseAndDatabase\Contracts;
 
-use Kreait\Firebase\Factory;
-use Kreait\Firebase\Messaging\CloudMessage;
+use Illuminate\Notifications\Notification as LaravelNotification;
 
-abstract class FirebaseNotification implements Notification
+abstract class FirebaseNotification extends LaravelNotification
 {
     protected FirebasePayload $payload;
 
@@ -14,23 +13,11 @@ abstract class FirebaseNotification implements Notification
         $this->payload = $payload;
     }
 
-    public function sendNotification(array $targets): void
+    /**
+     * Get the Firebase representation of the notification.
+     */
+    public function toFirebase($notifiable): array
     {
-        $credentialsPath = config('firebase-notification.firebase.credentials');
-
-        if (! is_string($credentialsPath) || ! file_exists($credentialsPath)) {
-            throw new \RuntimeException(
-                'Firebase credentials file not found or not configured.'
-            );
-        }
-
-        $factory = (new Factory())->withServiceAccount($credentialsPath);
-        $messaging = $factory->createMessaging();
-
-        $message = CloudMessage::fromArray(
-            $this->payload->getPayload()
-        );
-
-        $messaging->sendMulticast($message, $targets);
+        return $this->payload->getPayload();
     }
 }

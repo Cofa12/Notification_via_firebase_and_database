@@ -4,7 +4,7 @@ namespace Cofa\NotificationViaFirebaseAndDatabase\Contracts;
 
 use Illuminate\Notifications\Notification as LaravelNotification;
 
-class DatabaseNotification extends LaravelNotification implements Notification
+class DatabaseNotification extends LaravelNotification
 {
     protected array $data;
 
@@ -18,25 +18,10 @@ class DatabaseNotification extends LaravelNotification implements Notification
     }
 
     /**
-     * Channels
-     */
-    public function via($notifiable): array
-    {
-        return ['database'];
-    }
-
-    /**
-     * Stored in notifications table
+     * Get the database representation of the notification.
      */
     public function toDatabase($notifiable): array
     {
         return $this->data;
-    }
-
-    public function sendNotification(array $targets): void
-    {
-        foreach ($targets as $target) {
-            $target->notify($this);
-        }
     }
 }

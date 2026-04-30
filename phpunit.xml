@@ -7,11 +7,8 @@
          failOnWarning="true"
          cacheDirectory=".phpunit.cache">
     <testsuites>
-        <testsuite name="Unit">
-            <directory>tests/Unit</directory>
-        </testsuite>
-        <testsuite name="Feature">
-            <directory>tests/Feature</directory>
+        <testsuite name="Default">
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
     <source>
